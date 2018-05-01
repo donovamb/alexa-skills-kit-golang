@@ -204,6 +204,46 @@ type DialogDirective struct {
 	UpdatedIntent *Intent `json:"updatedIntent,omitempty"`
 }
 
+// DisplayDirective contains directives for use with Displays
+type DisplayDirective struct {
+	Type     string `json:"type"`
+	Template *Template  `json:"template"`
+}
+
+type Template struct {
+	Type      string `json:"type"`
+	Token     string `json:"token"`
+	Title     string `json:"title"`
+	TextContent *TextContent `json:"textContent"`
+	Image *DisplayImage `json:"backgroundImage"`
+	BackButton string `json:"backButton"`
+	ListItems []*ListItem `json:"listItems"`
+}
+type ListItem struct {
+	Token string `json:"token"`
+	Image *DisplayImage `json:"image"`
+	TextContent *TextContent `json:"textContent"`
+}
+
+type TextContent struct {
+	PrimaryText *Text `json:"primaryText"`
+	SecondaryText *Text `json:"secondaryText"`
+	TertiaryText *Text `json:"tertiaryText"`
+}
+
+type Text struct {
+	Type string `json:"type"`
+	Text string `json:"text"`
+}
+
+type DisplayImage struct {
+	ContentDescription string `json:"contentDescription"`
+	Sources            []*Source `json:"sources"`
+}
+
+type Source struct {
+	URL string `json:"url"`
+}
 // ProcessRequest handles a request passed from Alexa
 func (alexa *Alexa) ProcessRequest(ctx context.Context, requestEnv *RequestEnvelope) (*ResponseEnvelope, error) {
 
@@ -339,6 +379,11 @@ func (r *Response) AddDialogDirective(dialogType, slotToElicit, slotToConfirm st
 		UpdatedIntent: intent,
 	}
 	r.Directives = append(r.Directives, d)
+}
+
+// AddDisplayDirective adds a Dialog directive to the Response.
+func (r *Response) AddDisplayDirective(directive *DisplayDirective) {
+	r.Directives = append(r.Directives, directive)
 }
 
 // verifyApplicationId verifies that the ApplicationID sent in the request
